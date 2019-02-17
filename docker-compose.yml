@@ -102,9 +102,8 @@ services:
       - AIRFLOW_FIRSTNAME=${AIRFLOW_FIRSTNAME}
       - AIRFLOW_LASTNAME=${AIRFLOW_LASTNAME}
       - AIRFLOW_EMAIL=${AIRFLOW_EMAIL}
-      - AIRFLOW_LOAD_EXAMPLES=no
-      - AIRFLOW_BASE_URL=https://airflow.${DOMAIN}
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
     labels:
       traefik.enable: "true"
       traefik.frontend.rule: "Host:airflow.${DOMAIN}"
