@@ -137,6 +137,28 @@ services:
       - web
       - airflow
 
+  minio:
+    volumes:
+    - minio_data:/data
+    ports:
+    - "9010:9000"
+    environment:
+    - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+    - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+    labels:
+      traefik.enable: "true"
+      traefik.frontend.rule: "Host:minio.${DOMAIN}"
+      traefik.backend: "minio-service"
+      traefik.docker.network: "web"
+      traefik.port: "9000"
+    networks:
+      web:
+      airflow:
+        ipv4_address: ${IP_RANGE}.130
+    command: server /data
+    container_name: minio
+    image: minio/minio
+
 volumes:
   airflow_database_data:
     driver: local
@@ -147,6 +169,8 @@ volumes:
   airflow_worker_data:
     driver: local
   metabase_data:
+    driver: local
+  minio_data:
     driver: local
   redis_data:
     driver: local
