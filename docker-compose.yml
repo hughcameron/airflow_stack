@@ -99,7 +99,12 @@ services:
       - AIRFLOW_DATABASE_HOST=airflow-database
       - AIRFLOW_PASSWORD=${AIRFLOW_PASSWORD}
       - AIRFLOW_USERNAME=${AIRFLOW_USER}
+      - AIRFLOW_FIRSTNAME=${AIRFLOW_FIRSTNAME}
+      - AIRFLOW_LASTNAME=${AIRFLOW_LASTNAME}
       - AIRFLOW_EMAIL=${AIRFLOW_EMAIL}
+      - AIRFLOW_LOAD_EXAMPLES=no
+      - AIRFLOW_BASE_URL=https://airflow.${DOMAIN}
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
     labels:
       traefik.enable: "true"
       traefik.frontend.rule: "Host:airflow.${DOMAIN}"
