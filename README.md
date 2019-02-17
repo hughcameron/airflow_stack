@@ -4,7 +4,7 @@
 
 An example `.env` file with environment variables for docker-compose looks like:
 
-``` Environment Variables
+``` env
 AIRFLOW_DIR=/home/docker/airflow
 AIRFLOW_EMAIL=myemail@gmail.com
 AIRFLOW_USER=<dbuser>
