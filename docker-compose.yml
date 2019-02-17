@@ -140,16 +140,16 @@ services:
 
 volumes:
   airflow_database_data:
-    external: true
+    driver: local
   airflow_data:
-    external: true
+    driver: local
   airflow_scheduler_data:
-    external: true
+    driver: local
   airflow_worker_data:
-    external: true
+    driver: local
   metabase_data:
-    external: true
+    driver: local
   redis_data:
-    external: true
+    driver: local
   warehouse_data:
-    external: true
+    driver: local
