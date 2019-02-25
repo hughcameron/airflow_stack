@@ -12,7 +12,7 @@ steps:
   - name: dockersock
     path: /var/run/docker.sock
   commands:
-    - docker-compse down
+    - docker-compose down
     - docker-compose up -d
 
 volumes:
