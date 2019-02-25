@@ -1,0 +1,27 @@
+kind: pipeline
+name: default
+
+clone:
+  depth: 50
+
+steps:
+- name: compose up
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+    - docker-compse down
+    - docker volume rm airflow_data
+    - docker volume rm airflow_worker_data
+    - docker volume rm minio_data
+    - docker volume rm redis_data
+    - docker volume rm warehouse_data
+    - docker-compose up -d
+
+volumes:
+- name: dockersock
+  host:
+    path: /volume1/docker/config/docker.sock
+
+
