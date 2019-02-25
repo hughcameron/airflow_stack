@@ -18,7 +18,7 @@ services:
       - POSTGRESQL_USERNAME=${AIRFLOW_DATABASE_USERNAME}
       - POSTGRESQL_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
     volumes:
-      - airflow_database_data:/bitnami
+      - airflow_data:/bitnami
     labels:
       traefik.enable: "false"
     networks:
@@ -63,7 +63,7 @@ services:
       - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
       - AIRFLOW_DATABASE_HOST=airflow-database
     volumes:
-      - airflow_worker_data:/bitnami
+      - airflow_data:/bitnami
     labels:
       traefik.enable: "false"
     networks:
@@ -81,7 +81,7 @@ services:
       - AIRFLOW_DATABASE_HOST=airflow-database
       - AIRFLOW_LOAD_EXAMPLES=yes
     volumes:
-      - airflow_scheduler_data:/bitnami
+      - airflow_data:/bitnami
     labels:
       traefik.enable: "false"
     networks:
@@ -160,11 +160,7 @@ services:
     image: minio/minio
 
 volumes:
-  airflow_database_data:
-    driver: local
   airflow_data:
-    driver: local
-  airflow_scheduler_data:
     driver: local
   airflow_worker_data:
     driver: local
