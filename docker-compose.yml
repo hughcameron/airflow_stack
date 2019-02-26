@@ -106,15 +106,20 @@ services:
       - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
     labels:
       traefik.enable: "true"
-      traefik.frontend.rule: "Host:airflow.${DOMAIN}"
-      traefik.backend: "airflow-service"
-      traefik.docker.network: "web"
-      traefik.port: "8080"
+      traefik.airflow.frontend.rule: "Host:airflow.${DOMAIN}"
+      traefik.airflow.backend: "airflow-service"
+      traefik.airflow.docker.network: "web"
+      traefik.airflow.port: "8080"
+      traefik.dagger.frontend.rule: "Host:dagger.${DOMAIN}"
+      traefik.dagger.backend: "dagger-service"
+      traefik.dagger.docker.network: "web"
+      traefik.dagger.port: "2000"
     networks:
       - web
       - airflow
     ports:
       - '8080:8080'
+      - '2000:2000'
     volumes:
       - airflow_data:/bitnami
 
