@@ -53,6 +53,18 @@ steps:
     - docker volume rm airflowstack_warehouse_data
     - docker-compose -p airflowstack up -d
 
+- name: jupyterlab
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  environment:
+    DAGGER_NOTEBOOK_PASSWORD:
+      from_secret: DAGGER_NOTEBOOK_PASSWORD
+  commands:
+    - docker exec --user root airflow pip3 install jupyterlab
+    - docker exec --user root airflow jupyter lab --allow-root --ip=0.0.0.0 --port=2000 -no-browser --NotebookApp.password=${DAGGER_NOTEBOOK_PASSWORD}
+
 volumes:
 - name: dockersock
   host:
