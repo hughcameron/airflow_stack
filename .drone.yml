@@ -2,72 +2,71 @@ kind: pipeline
 name: default
 
 steps:
-- name: compose up
-  image: docker/compose:1.24.0-rc1
-  environment:
-    DOCKER_SOCKET:
-      from_secret: DOCKER_SOCKET
-    DOMAIN:
-      from_secret: DOMAIN
-    IP_RANGE:
-      from_secret: IP_RANGE
-    TIMEZONE:
-      from_secret: TIMEZONE
-    AIRFLOW_EMAIL:
-      from_secret: AIRFLOW_EMAIL
-    AIRFLOW_USER:
-      from_secret: AIRFLOW_USER
-    AIRFLOW_FIRSTNAME:
-      from_secret: AIRFLOW_FIRSTNAME
-    AIRFLOW_LASTNAME:
-      from_secret: AIRFLOW_LASTNAME
-    AIRFLOW_PASSWORD:
-      from_secret: AIRFLOW_PASSWORD
-    AIRFLOW_FERNET_KEY:
-      from_secret: AIRFLOW_FERNET_KEY
-    AIRFLOW_DATABASE_NAME:
-      from_secret: AIRFLOW_DATABASE_NAME
-    AIRFLOW_DATABASE_USERNAME:
-      from_secret: AIRFLOW_DATABASE_USERNAME
-    AIRFLOW_DATABASE_PASSWORD:
-      from_secret: AIRFLOW_DATABASE_PASSWORD
-    WAREHOUSE_NAME:
-      from_secret: WAREHOUSE_NAME
-    WAREHOUSE_USERNAME:
-      from_secret: WAREHOUSE_USERNAME
-    WAREHOUSE_PASSWORD:
-      from_secret: WAREHOUSE_PASSWORD
-    MINIO_ACCESS_KEY:
-      from_secret: MINIO_ACCESS_KEY
-    MINIO_SECRET_KEY:
-      from_secret: MINIO_SECRET_KEY
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
-  commands:
-    - docker-compose -p airflowstack down
-    - docker volume rm airflowstack_airflow_data
-    - docker volume rm airflowstack_airflow_worker_data
-    - docker volume rm airflowstack_minio_data
-    - docker volume rm airflowstack_redis_data
-    - docker volume rm airflowstack_warehouse_data
-    - docker-compose -p airflowstack up -d
+  - name: compose up
+    image: docker/compose:1.24.0-rc1
+    environment:
+      DOCKER_SOCKET:
+        from_secret: DOCKER_SOCKET
+      DOMAIN:
+        from_secret: DOMAIN
+      IP_RANGE:
+        from_secret: IP_RANGE
+      TIMEZONE:
+        from_secret: TIMEZONE
+      AIRFLOW_EMAIL:
+        from_secret: AIRFLOW_EMAIL
+      AIRFLOW_USER:
+        from_secret: AIRFLOW_USER
+      AIRFLOW_FIRSTNAME:
+        from_secret: AIRFLOW_FIRSTNAME
+      AIRFLOW_LASTNAME:
+        from_secret: AIRFLOW_LASTNAME
+      AIRFLOW_PASSWORD:
+        from_secret: AIRFLOW_PASSWORD
+      AIRFLOW_FERNET_KEY:
+        from_secret: AIRFLOW_FERNET_KEY
+      AIRFLOW_DATABASE_NAME:
+        from_secret: AIRFLOW_DATABASE_NAME
+      AIRFLOW_DATABASE_USERNAME:
+        from_secret: AIRFLOW_DATABASE_USERNAME
+      AIRFLOW_DATABASE_PASSWORD:
+        from_secret: AIRFLOW_DATABASE_PASSWORD
+      WAREHOUSE_NAME:
+        from_secret: WAREHOUSE_NAME
+      WAREHOUSE_USERNAME:
+        from_secret: WAREHOUSE_USERNAME
+      WAREHOUSE_PASSWORD:
+        from_secret: WAREHOUSE_PASSWORD
+      MINIO_ACCESS_KEY:
+        from_secret: MINIO_ACCESS_KEY
+      MINIO_SECRET_KEY:
+        from_secret: MINIO_SECRET_KEY
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker-compose -p airflowstack down
+      - docker volume rm airflowstack_airflow_data
+      - docker volume rm airflowstack_airflow_worker_data
+      - docker volume rm airflowstack_minio_data
+      - docker volume rm airflowstack_redis_data
+      - docker volume rm airflowstack_warehouse_data
+      - docker-compose -p airflowstack up -d
 
-- name: jupyterlab
-  image: docker:dind
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
-  environment:
-    DAGGER_NOTEBOOK_PASSWORD:
-      from_secret: DAGGER_NOTEBOOK_PASSWORD
-  commands:
-    - docker exec --user root airflow pip3 install jupyterlab
-    - docker exec --user root airflow jupyter lab --allow-root --ip=0.0.0.0 --port=2000 --NotebookApp.password=$DAGGER_NOTEBOOK_PASSWORD
+  - name: jupyterlab
+    image: docker:dind
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    environment:
+      DAGGER_NOTEBOOK_PASSWORD:
+        from_secret: DAGGER_NOTEBOOK_PASSWORD
+    commands:
+      - docker exec -it --user 1001 source /opt/bitnami/airflow/venv/bin/activate
+      - pip3 install jupyterlab
+      - jupyter lab --allow-root --ip=0.0.0.0 --port=2000 --NotebookApp.password=$DAGGER_NOTEBOOK_PASSWORD
 
 volumes:
-- name: dockersock
-  host:
-    path: /volume1/docker/config/docker.sock
-
-
+  - name: dockersock
+    host:
+      path: /volume1/docker/config/docker.sock
