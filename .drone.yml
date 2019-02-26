@@ -63,8 +63,7 @@ steps:
       from_secret: DAGGER_NOTEBOOK_PASSWORD
   commands:
     - docker exec --user root airflow pip3 install jupyterlab
-    - docker exec --user root airflow jupyter lab --allow-root --ip=0.0.0.0 --port=2000 --no-browser --NotebookApp.password=$DAGGER_NOTEBOOK_PASSWORD
-    - docker ps
+    - docker exec --user root airflow jupyter lab --allow-root --ip=0.0.0.0 --port=2000 --NotebookApp.password=$DAGGER_NOTEBOOK_PASSWORD
 
 volumes:
 - name: dockersock
