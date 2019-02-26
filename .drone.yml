@@ -48,13 +48,13 @@ steps:
   - name: dockersock
     path: /var/run/docker.sock
   commands:
-    - docker-compose down
+    - docker-compose -p airflowstack down
     - docker volume rm airflowstack_airflow_data
     - docker volume rm airflowstack_airflow_worker_data
     - docker volume rm airflowstack_minio_data
     - docker volume rm airflowstack_redis_data
     - docker volume rm airflowstack_warehouse_data
-    - docker-compose up -d
+    - docker-compose -p airflowstack up -d
 
 volumes:
 - name: dockersock
