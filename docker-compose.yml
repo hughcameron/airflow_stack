@@ -105,15 +105,13 @@ services:
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
       - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
     labels:
-      traefik.airflow.enable: "true"
+      traefik.enable: "true"
+      traefik.docker.network: "web"
       traefik.airflow.frontend.rule: "Host:airflow.${DOMAIN}"
       traefik.airflow.backend: "airflow-service"
-      traefik.airflow.docker.network: "web"
       traefik.airflow.port: "8080"
-      traefik.dagger.enable: "true"
       traefik.dagger.frontend.rule: "Host:dagger.${DOMAIN}"
       traefik.dagger.backend: "dagger-service"
-      traefik.dagger.docker.network: "web"
       traefik.dagger.port: "2000"
     networks:
       - web
