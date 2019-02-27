@@ -66,6 +66,7 @@ services:
       - airflow_data:/bitnami
     labels:
       traefik.enable: "true"
+      traefik.docker.network: "web"
       traefik.frontend.rule: "Host:dagger.${DOMAIN}"
       traefik.backend: "dagger-service"
       traefik.port: "2000"
@@ -135,9 +136,9 @@ services:
     image: metabase/metabase
     labels:
       traefik.enable: "true"
+      traefik.docker.network: "web"
       traefik.frontend.rule: "Host:metabase.${DOMAIN}"
       traefik.backend: "metabase-service"
-      traefik.docker.network: "web"
       traefik.port: "3000"
     networks:
       - web
@@ -153,9 +154,9 @@ services:
     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     labels:
       traefik.enable: "true"
+      traefik.docker.network: "web"
       traefik.frontend.rule: "Host:minio.${DOMAIN}"
       traefik.backend: "minio-service"
-      traefik.docker.network: "web"
       traefik.port: "9000"
     networks:
       web:
