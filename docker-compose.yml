@@ -65,8 +65,14 @@ services:
     volumes:
       - airflow_data:/bitnami
     labels:
-      traefik.enable: "false"
+      traefik.enable: "true"
+      traefik.frontend.rule: "Host:dagger.${DOMAIN}"
+      traefik.backend: "dagger-service"
+      traefik.port: "2000"
+    ports:
+      - '8080:8080'
     networks:
+      - web
       - airflow
 
   airflow-scheduler:
@@ -107,18 +113,14 @@ services:
     labels:
       traefik.enable: "true"
       traefik.docker.network: "web"
-      traefik.airflow.frontend.rule: "Host:airflow.${DOMAIN}"
-      traefik.airflow.backend: "airflow-service"
-      traefik.airflow.port: "8080"
-      traefik.dagger.frontend.rule: "Host:dagger.${DOMAIN}"
-      traefik.dagger.backend: "dagger-service"
-      traefik.dagger.port: "2000"
+      traefik.frontend.rule: "Host:airflow.${DOMAIN}"
+      traefik.backend: "airflow-service"
+      traefik.port: "8080"
     networks:
       - web
       - airflow
     ports:
       - '8080:8080'
-      - '2000:2000'
     volumes:
       - airflow_data:/bitnami
 
