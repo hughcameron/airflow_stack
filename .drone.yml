@@ -60,15 +60,15 @@ steps:
         path: /var/run/docker.sock
     commands:
       - docker cp requirements.txt airflow:/tmp/
-      - docker exec --user root airflow /opt/bitnami/airflow/venv/bin/pip install /tmp/requirements.txt
+      - docker exec --user root airflow /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
       - docker exec --user root airflow rm /tmp/requirements.txt
 
       - docker cp requirements.txt airflow-worker:/tmp/
-      - docker exec --user root airflow-worker /opt/bitnami/airflow/venv/bin/pip install /tmp/requirements.txt
+      - docker exec --user root airflow-worker /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
       - docker exec --user root airflow-worker rm /tmp/requirements.txt
 
       - docker cp requirements.txt airflow-scheduler:/tmp/
-      - docker exec --user root airflow-scheduler /opt/bitnami/airflow/venv/bin/pip install /tmp/requirements.txt
+      - docker exec --user root airflow-scheduler /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
       - docker exec --user root airflow-scheduler rm /tmp/requirements.txt
 
   - name: jupyterlab
