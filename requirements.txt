@@ -1,1 +1,1 @@
-apache-airflow[s3]
+apache-airflow[s3] --upgrade
