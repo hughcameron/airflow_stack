@@ -18,7 +18,7 @@ services:
       - POSTGRESQL_USERNAME=${AIRFLOW_DATABASE_USERNAME}
       - POSTGRESQL_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
     volumes:
-      - airflow_data:/bitnami
+      - airflow_database_data:/bitnami
     labels:
       traefik.enable: "false"
     networks:
@@ -47,48 +47,6 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
       - redis_data:/bitnami
-    labels:
-      traefik.enable: "false"
-    networks:
-      - airflow
-
-  airflow-worker:
-    container_name: airflow-worker
-    image: bitnami/airflow-worker:latest
-    environment:
-      - AIRFLOW_FERNET_KEY=${AIRFLOW_FERNET_KEY}
-      - AIRFLOW_EXECUTOR=CeleryExecutor
-      - AIRFLOW_DATABASE_NAME=${AIRFLOW_DATABASE_NAME}
-      - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
-      - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
-      - AIRFLOW_DATABASE_HOST=airflow-database
-    volumes:
-      - airflow_data:/bitnami
-    labels:
-      traefik.enable: "true"
-      traefik.docker.network: "web"
-      traefik.frontend.rule: "Host:dagger.${DOMAIN}"
-      traefik.backend: "dagger-service"
-      traefik.port: "2000"
-    ports:
-      - '2000:2000'
-    networks:
-      - web
-      - airflow
-
-  airflow-scheduler:
-    container_name: airflow-scheduler
-    image: bitnami/airflow-scheduler:latest
-    environment:
-      - AIRFLOW_FERNET_KEY=${AIRFLOW_FERNET_KEY}
-      - AIRFLOW_EXECUTOR=CeleryExecutor
-      - AIRFLOW_DATABASE_NAME=${AIRFLOW_DATABASE_NAME}
-      - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
-      - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
-      - AIRFLOW_DATABASE_HOST=airflow-database
-      - AIRFLOW_LOAD_EXAMPLES=yes
-    volumes:
-      - airflow_data:/bitnami
     labels:
       traefik.enable: "false"
     networks:
@@ -124,6 +82,48 @@ services:
       - '8080:8080'
     volumes:
       - airflow_data:/bitnami
+
+  airflow-scheduler:
+    container_name: airflow-scheduler
+    image: bitnami/airflow-scheduler:latest
+    environment:
+      - AIRFLOW_FERNET_KEY=${AIRFLOW_FERNET_KEY}
+      - AIRFLOW_EXECUTOR=CeleryExecutor
+      - AIRFLOW_DATABASE_NAME=${AIRFLOW_DATABASE_NAME}
+      - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
+      - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
+      - AIRFLOW_DATABASE_HOST=airflow-database
+      - AIRFLOW_LOAD_EXAMPLES=yes
+    volumes:
+      - airflow_scheduler_data:/bitnami
+    labels:
+      traefik.enable: "false"
+    networks:
+      - airflow
+
+  airflow-worker:
+    container_name: airflow-worker
+    image: bitnami/airflow-worker:latest
+    environment:
+      - AIRFLOW_FERNET_KEY=${AIRFLOW_FERNET_KEY}
+      - AIRFLOW_EXECUTOR=CeleryExecutor
+      - AIRFLOW_DATABASE_NAME=${AIRFLOW_DATABASE_NAME}
+      - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
+      - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
+      - AIRFLOW_DATABASE_HOST=airflow-database
+    volumes:
+      - airflow_worker_data:/bitnami
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "web"
+      traefik.frontend.rule: "Host:dagger.${DOMAIN}"
+      traefik.backend: "dagger-service"
+      traefik.port: "2000"
+    ports:
+      - '2000:2000'
+    networks:
+      - web
+      - airflow
 
   metabase:
     container_name: metabase
@@ -170,6 +170,10 @@ volumes:
   airflow_data:
     driver: local
   airflow_worker_data:
+    driver: local
+  airflow_scheduler_data:
+    driver: local
+  airflow_database_data:
     driver: local
   metabase_data:
     driver: local
