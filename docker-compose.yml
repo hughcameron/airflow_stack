@@ -68,6 +68,7 @@ services:
       - AIRFLOW_LASTNAME=${AIRFLOW_LASTNAME}
       - AIRFLOW_EMAIL=${AIRFLOW_EMAIL}
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+      - AIRFLOW__WEBSERVER__BASE_URL=airflow.${DOMAIN}
       - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
     labels:
       traefik.enable: "true"
@@ -93,7 +94,8 @@ services:
       - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
       - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
       - AIRFLOW_DATABASE_HOST=airflow-database
-      - AIRFLOW_LOAD_EXAMPLES=yes
+      - AIRFLOW_LOAD_EXAMPLES=no
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
     volumes:
       - airflow_scheduler_data:/bitnami
     labels:
@@ -111,6 +113,7 @@ services:
       - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
       - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
       - AIRFLOW_DATABASE_HOST=airflow-database
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
     volumes:
       - airflow_worker_data:/bitnami
     labels:
