@@ -69,19 +69,15 @@ steps:
         from_secret: WAREHOUSE_USERNAME
       WAREHOUSE_PASSWORD: 
         from_secret: WAREHOUSE_PASSWORD
-      WAREHOUSE_PORT: 
-        from_secret: WAREHOUSE_PORT
       WAREHOUSE_NAME: 
         from_secret: WAREHOUSE_NAME
-      MINIO_HOST: 
-        from_secret: MINIO_HOST
       MINIO_ACCESS_KEY: 
         from_secret: MINIO_ACCESS_KEY
       MINIO_SECRET_KEY: 
         from_secret: MINIO_SECRET_KEY
     commands: 
         - sleep 5m
-        - docker exec -d --user 1001 airflow airflow connections -a --conn_id warehouse --conn_type postgres --conn_login $WAREHOUSE_USERNAME --conn_password $WAREHOUSE_PASSWORD --conn_host $IP_RANGE.120 --conn_schema $WAREHOUSE_NAME --conn_port $WAREHOUSE_PORT
+        - docker exec -d --user 1001 airflow airflow connections -a --conn_id warehouse --conn_type postgres --conn_login $WAREHOUSE_USERNAME --conn_password $WAREHOUSE_PASSWORD --conn_host $IP_RANGE.120 --conn_schema $WAREHOUSE_NAME --conn_port 5432
         - docker exec -d --user 1001 airflow airflow connections -a --conn_id minio --conn_type s3 --conn_login $MINIO_ACCESS_KEY --conn_password $MINIO_SECRET_KEY --conn_host $IP_RANGE.130 --conn_port 9000
 
   - name: requirements
