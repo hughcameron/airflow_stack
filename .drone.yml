@@ -55,6 +55,34 @@ steps:
       - docker volume rm airflowstack_warehouse_data
       - docker-compose -p airflowstack up -d
 
+  - name: connections
+    image: docker:dind
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    environment:
+      IP_RANGE:
+        from_secret: IP_RANGE
+      WAREHOUSE_HOST: 
+        from_secret: WAREHOUSE_HOST
+      WAREHOUSE_USERNAME: 
+        from_secret: WAREHOUSE_USERNAME
+      WAREHOUSE_PASSWORD: 
+        from_secret: WAREHOUSE_PASSWORD
+      WAREHOUSE_PORT: 
+        from_secret: WAREHOUSE_PORT
+      WAREHOUSE_NAME: 
+        from_secret: WAREHOUSE_NAME
+      MINIO_HOST: 
+        from_secret: MINIO_HOST
+      MINIO_ACCESS_KEY: 
+        from_secret: MINIO_ACCESS_KEY
+      MINIO_SECRET_KEY: 
+        from_secret: MINIO_SECRET_KEY
+    commands: 
+        - docker ex- docker exec -d --user 1001 airflow airflow connections -a --conn_id warehouse --conn_type postgres --conn_login $WAREHOUSE_USERNAME --conn_password $WAREHOUSE_PASSWORD --conn_host ${IP_RANGE}.120 --conn_schema $WAREHOUSE_NAME --conn_port $WAREHOUSE_PORT
+        - docker ex- docker exec -d --user 1001 airflow airflow connections -a --conn_id warehouse --conn_type s3 --conn_login $MINIO_ACCESS_KEY --conn_password $MINIO_SECRET_KEY --conn_host ${IP_RANGE}.130 --conn_port 9000
+
   - name: requirements
     image: docker:dind
     volumes:
