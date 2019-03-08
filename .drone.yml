@@ -82,7 +82,7 @@ steps:
     commands: 
         - sleep 5m
         - docker exec -d --user 1001 airflow airflow connections -a --conn_id warehouse --conn_type postgres --conn_login $WAREHOUSE_USERNAME --conn_password $WAREHOUSE_PASSWORD --conn_host ${IP_RANGE}.120 --conn_schema $WAREHOUSE_NAME --conn_port $WAREHOUSE_PORT
-        - docker exec -d --user 1001 airflow airflow connections -a --conn_id warehouse --conn_type s3 --conn_login $MINIO_ACCESS_KEY --conn_password $MINIO_SECRET_KEY --conn_host ${IP_RANGE}.130 --conn_port 9000
+        - docker exec -d --user 1001 airflow airflow connections -a --conn_id minio --conn_type s3 --conn_login $MINIO_ACCESS_KEY --conn_password $MINIO_SECRET_KEY --conn_host ${IP_RANGE}.130 --conn_port 9000
 
   - name: requirements
     image: docker:dind
