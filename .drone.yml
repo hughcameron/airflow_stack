@@ -55,23 +55,23 @@ steps:
       - docker volume rm airflowstack_warehouse_data
       - docker-compose -p airflowstack up -d
 
-  # - name: requirements
-  #   image: docker:dind
-  #   volumes:
-  #     - name: dockersock
-  #       path: /var/run/docker.sock
-  #   commands:
-  #     - docker cp requirements.txt airflow:/tmp/
-  #     - docker exec --user root airflow /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
-  #     - docker exec --user root airflow rm /tmp/requirements.txt
+  - name: requirements
+    image: docker:dind
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker cp requirements.txt airflow:/tmp/
+      - docker exec --user root airflow /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
+      - docker exec --user root airflow rm /tmp/requirements.txt
 
-  #     - docker cp requirements.txt airflow-worker:/tmp/
-  #     - docker exec --user root airflow-worker /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
-  #     - docker exec --user root airflow-worker rm /tmp/requirements.txt
+      - docker cp requirements.txt airflow-worker:/tmp/
+      - docker exec --user root airflow-worker /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
+      - docker exec --user root airflow-worker rm /tmp/requirements.txt
 
-  #     - docker cp requirements.txt airflow-scheduler:/tmp/
-  #     - docker exec --user root airflow-scheduler /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
-  #     - docker exec --user root airflow-scheduler rm /tmp/requirements.txt
+      - docker cp requirements.txt airflow-scheduler:/tmp/
+      - docker exec --user root airflow-scheduler /opt/bitnami/airflow/venv/bin/pip install -r /tmp/requirements.txt
+      - docker exec --user root airflow-scheduler rm /tmp/requirements.txt
 
   - name: jupyterlab
     image: docker:dind
