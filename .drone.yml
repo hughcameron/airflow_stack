@@ -77,6 +77,39 @@ steps:
         from_secret: MINIO_SECRET_KEY
     commands: 
         - sleep 5m
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id aws_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id azure_cosmos_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id azure_data_lake_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id beeline_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id bigquery_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id cassandra_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id databricks_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id druid_broker_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id druid_ingest_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id emr_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id fs_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id google_cloud_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id hive_cli_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id hiveserver2_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id http_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id local_mysql
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id metastore_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id mongo_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id mssql_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id mysql_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id postgres_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id presto_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id qubole_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id redis_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id segment_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id sftp_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id spark_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id sqlite_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id sqoop_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id ssh_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id vertica_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id wasb_default
+        - docker exec -d --user 1001 airflow airflow connections -d --conn_id webhdfs_default
         - docker exec -d --user 1001 airflow airflow connections -a --conn_id warehouse --conn_type postgres --conn_login $WAREHOUSE_USERNAME --conn_password $WAREHOUSE_PASSWORD --conn_host $IP_RANGE.120 --conn_schema $WAREHOUSE_NAME --conn_port 5432
         - docker exec -d --user 1001 airflow airflow connections -a --conn_id minio --conn_type s3 --conn_login $MINIO_ACCESS_KEY --conn_password $MINIO_SECRET_KEY --conn_host $IP_RANGE.130 --conn_port 9000
 
