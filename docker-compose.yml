@@ -18,7 +18,7 @@ services:
       - POSTGRESQL_USERNAME=${AIRFLOW_DATABASE_USERNAME}
       - POSTGRESQL_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
     volumes:
-      - airflow_data:/bitnami
+      - airflow_database_data:/bitnami
     labels:
       traefik.enable: "false"
     networks:
@@ -52,41 +52,6 @@ services:
     networks:
       - airflow
 
-  airflow-worker:
-    container_name: airflow-worker
-    image: bitnami/airflow-worker:latest
-    environment:
-      - AIRFLOW_FERNET_KEY=${AIRFLOW_FERNET_KEY}
-      - AIRFLOW_EXECUTOR=CeleryExecutor
-      - AIRFLOW_DATABASE_NAME=${AIRFLOW_DATABASE_NAME}
-      - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
-      - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
-      - AIRFLOW_DATABASE_HOST=airflow-database
-    volumes:
-      - airflow_data:/bitnami
-    labels:
-      traefik.enable: "false"
-    networks:
-      - airflow
-
-  airflow-scheduler:
-    container_name: airflow-scheduler
-    image: bitnami/airflow-scheduler:latest
-    environment:
-      - AIRFLOW_FERNET_KEY=${AIRFLOW_FERNET_KEY}
-      - AIRFLOW_EXECUTOR=CeleryExecutor
-      - AIRFLOW_DATABASE_NAME=${AIRFLOW_DATABASE_NAME}
-      - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
-      - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
-      - AIRFLOW_DATABASE_HOST=airflow-database
-      - AIRFLOW_LOAD_EXAMPLES=yes
-    volumes:
-      - airflow_data:/bitnami
-    labels:
-      traefik.enable: "false"
-    networks:
-      - airflow
-
   airflow:
     container_name: airflow
     image: bitnami/airflow:latest
@@ -102,13 +67,15 @@ services:
       - AIRFLOW_FIRSTNAME=${AIRFLOW_FIRSTNAME}
       - AIRFLOW_LASTNAME=${AIRFLOW_LASTNAME}
       - AIRFLOW_EMAIL=${AIRFLOW_EMAIL}
+      - AIRFLOW_LOAD_EXAMPLES=no
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
+      - AIRFLOW__WEBSERVER__BASE_URL=https://airflow.${DOMAIN}
       - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
     labels:
       traefik.enable: "true"
+      traefik.docker.network: "web"
       traefik.frontend.rule: "Host:airflow.${DOMAIN}"
       traefik.backend: "airflow-service"
-      traefik.docker.network: "web"
       traefik.port: "8080"
     networks:
       - web
@@ -117,6 +84,50 @@ services:
       - '8080:8080'
     volumes:
       - airflow_data:/bitnami
+
+  airflow-scheduler:
+    container_name: airflow-scheduler
+    image: bitnami/airflow-scheduler:latest
+    environment:
+      - AIRFLOW_FERNET_KEY=${AIRFLOW_FERNET_KEY}
+      - AIRFLOW_EXECUTOR=CeleryExecutor
+      - AIRFLOW_DATABASE_NAME=${AIRFLOW_DATABASE_NAME}
+      - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
+      - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
+      - AIRFLOW_DATABASE_HOST=airflow-database
+      - AIRFLOW_LOAD_EXAMPLES=no
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
+    volumes:
+      - airflow_scheduler_data:/bitnami
+    labels:
+      traefik.enable: "false"
+    networks:
+      - airflow
+
+  airflow-worker:
+    container_name: airflow-worker
+    image: bitnami/airflow-worker:latest
+    environment:
+      - AIRFLOW_FERNET_KEY=${AIRFLOW_FERNET_KEY}
+      - AIRFLOW_EXECUTOR=CeleryExecutor
+      - AIRFLOW_DATABASE_NAME=${AIRFLOW_DATABASE_NAME}
+      - AIRFLOW_DATABASE_USERNAME=${AIRFLOW_DATABASE_USERNAME}
+      - AIRFLOW_DATABASE_PASSWORD=${AIRFLOW_DATABASE_PASSWORD}
+      - AIRFLOW_DATABASE_HOST=airflow-database
+      - AIRFLOW__CORE__DEFAULT_TIMEZONE=${TIMEZONE}
+    volumes:
+      - airflow_worker_data:/bitnami
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "web"
+      traefik.frontend.rule: "Host:dagger.${DOMAIN}"
+      traefik.backend: "dagger-service"
+      traefik.port: "2000"
+    ports:
+      - '2000:2000'
+    networks:
+      - web
+      - airflow
 
   metabase:
     container_name: metabase
@@ -129,9 +140,9 @@ services:
     image: metabase/metabase
     labels:
       traefik.enable: "true"
+      traefik.docker.network: "web"
       traefik.frontend.rule: "Host:metabase.${DOMAIN}"
       traefik.backend: "metabase-service"
-      traefik.docker.network: "web"
       traefik.port: "3000"
     networks:
       - web
@@ -147,9 +158,9 @@ services:
     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     labels:
       traefik.enable: "true"
+      traefik.docker.network: "web"
       traefik.frontend.rule: "Host:minio.${DOMAIN}"
       traefik.backend: "minio-service"
-      traefik.docker.network: "web"
       traefik.port: "9000"
     networks:
       web:
@@ -163,6 +174,10 @@ volumes:
   airflow_data:
     driver: local
   airflow_worker_data:
+    driver: local
+  airflow_scheduler_data:
+    driver: local
+  airflow_database_data:
     driver: local
   metabase_data:
     driver: local
