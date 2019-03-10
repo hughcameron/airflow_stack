@@ -111,7 +111,7 @@ steps:
         - docker exec -d --user 1001 airflow airflow connections -d --conn_id wasb_default
         - docker exec -d --user 1001 airflow airflow connections -d --conn_id webhdfs_default
         - docker exec -d --user 1001 airflow airflow connections -a --conn_id warehouse --conn_type postgres --conn_login $WAREHOUSE_USERNAME --conn_password $WAREHOUSE_PASSWORD --conn_host $IP_RANGE.120 --conn_schema $WAREHOUSE_NAME --conn_port 5432
-        - docker exec -d --user 1001 airflow airflow connections -a --conn_id minio --conn_type s3 --conn_login $MINIO_ACCESS_KEY --conn_password $MINIO_SECRET_KEY --conn_host $IP_RANGE.130 --conn_port 9000
+        - docker exec -d --user 1001 airflow airflow connections -a --conn_id minio --conn_type s3 --conn_login $MINIO_ACCESS_KEY --conn_password $MINIO_SECRET_KEY --conn_extra '{"host":"http://$IP_RANGE.130:9000"}'
 
   - name: requirements
     image: docker:dind
