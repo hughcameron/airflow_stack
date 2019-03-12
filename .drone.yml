@@ -45,6 +45,7 @@ steps:
       - name: dockersock
         path: /var/run/docker.sock
     commands:
+      - for i in ` docker network inspect -f '{{range .Containers}}{{.Name}} {{end}}' airflowstack_airflow`; do docker network disconnect -f airflowstack_airflow $i; done;
       - docker-compose -p airflowstack down
       - docker pull bitnami/postgresql:latest
       - docker pull bitnami/postgresql:latest
